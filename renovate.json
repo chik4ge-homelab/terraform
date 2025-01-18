@@ -5,9 +5,9 @@
   ],
   "customManagers": [
     {
-      "fileMatch": ["^terraform/main.tf$"],
+      "fileMatch": ["^main.tf$"],
       "matchStrings": [
-        "talos_version\\s*=\\s*\"(?<currentValue>v[\\d.]+)\""
+        "talos_version\\s*=\\s*\"(?<currentValue>.*?)\""
       ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "siderolabs/talos"
