@@ -2,5 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "customManagers": [
+    {
+      "fileMatch": ["^terraform/main.tf$"],
+      "matchStrings": [
+        "talos_version\\s*=\\s*\"(?<currentValue>v[\\d.]+)\""
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "siderolabs/talos"
+    }
   ]
 }
