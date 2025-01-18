@@ -16,8 +16,9 @@ locals {
   talos_iso_file_name = "talos-${local.talos_version}-nocloud-amd64.iso"
 }
 
-resource "proxmox_virtual_environment_download_file" "talos_cloud_image" {
+resource "proxmox_virtual_environment_download_file" "talos_cloud_images" {
   count        = length(local.pve_nodes)
+
   node_name    = local.pve_nodes[count.index]
   content_type = "iso"
   datastore_id = "local"
@@ -26,7 +27,7 @@ resource "proxmox_virtual_environment_download_file" "talos_cloud_image" {
   overwrite    = false
 }
 
-resource "proxmox_virtual_environment_vm" "controller" {
+resource "proxmox_virtual_environment_vm" "control_planes" {
   count = length(var.control_planes)
 
   name        = var.control_planes[count.index].name
@@ -72,7 +73,7 @@ resource "proxmox_virtual_environment_vm" "controller" {
     ssd          = true
     discard      = "on"
     size         = var.control_planes[count.index].disk_size
-    file_id      = proxmox_virtual_environment_download_file.talos_cloud_image[local.node_to_image_index[var.control_planes[count.index].pve_node_name]].id
+    file_id      = proxmox_virtual_environment_download_file.talos_cloud_images[local.node_to_image_index[var.control_planes[count.index].pve_node_name]].id
   }
 
   agent {
