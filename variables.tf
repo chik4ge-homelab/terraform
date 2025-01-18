@@ -22,12 +22,24 @@ variable "pve_host" {
   default     = "192.168.0.150:8006" # TODO: change to my domain and pass cf access headers
 }
 
-variable "control_nodes" {
-  description = "settings for k8s control nodes"
+variable "vm_ip_mask" {
+  description = "The IP mask for the VMs"
+  type        = string
+  default     = "22"
+}
+
+variable "network_gateway" {
+  description = "The network gateway for the VMs"
+  type        = string
+  default     = "192.168.0.1"
+}
+
+variable "control_planes" {
+  description = "settings for k8s control planes"
   type = list(
     object({
       name          = string
-      vmid          = number
+      vm_id         = number
       pve_node_name = string
       ip            = string
       memory        = optional(string, 6 * 1024) # 6GB
@@ -38,26 +50,26 @@ variable "control_nodes" {
   )
   default = [
     # {
-    #   name         = "k8s-c-argon"
-    #   vmid         = 101
+    #   name         = "k8s-cp-argon"
+    #   vm_id         = 101
     #   pve_node_name = "host01"
     #   ip           = "192.168.1.101"
     # },
     {
-      name          = "k8s-c-boron"
-      vmid          = 102
+      name          = "k8s-cp-boron"
+      vm_id         = 102
       pve_node_name = "host02"
       ip            = "192.168.1.102"
     },
   ]
 }
 
-variable "worker_nodes" {
+variable "workers" {
   description = "settings for k8s worker nodes"
   type = list(
     object({
       name          = string
-      vmid          = number
+      vm_id         = number
       pve_node_name = string
       ip            = string
       memory        = optional(string, 10 * 1024)
@@ -69,25 +81,25 @@ variable "worker_nodes" {
   default = [
     # {
     #   name         = "k8s-w-anemone"
-    #   vmid         = 201
+    #   vm_id         = 201
     #   pve_node_name = "host01"
     #   ip           = "192.168.1.201"
     # },
     # {
     #   name         = "k8s-c-blossom"
-    #   vmid         = 202
+    #   vm_id         = 202
     #   pve_node_name = "host01"
     #   ip           = "192.168.1.202"
     # },
     # {
     #   name         = "k8s-c-clover"
-    #   vmid         = 203
+    #   vm_id         = 203
     #   pve_node_name = "host02"
     #   ip           = "192.168.1.203"
     # },
     # {
     #   name         = "k8s-c-daisy"
-    #   vmid         = 204
+    #   vm_id         = 204
     #   pve_node_name = "host02"
     #   ip           = "192.168.1.204"
     # },
