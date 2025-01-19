@@ -8,8 +8,8 @@ tfplan
 *.gz
 support.zip
 support/
-talosconfig.yml
-kubeconfig.yml
+talosconfig.yaml
+kubeconfig.yaml
 kubernetes-ingress-ca-crt.pem
 tmp/
 secret*
