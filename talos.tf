@@ -4,38 +4,27 @@ locals {
       install = {
         image = "factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:${local.talos_version}"
       }
-      #   features = {
-      #     kubePrism = {
-      #       enabled = true
-      #       port    = 7445
-      #     }
-      #     hostDNS = {
-      #       enabled              = true
-      #       forwardKubeDNSToHost = true
-      #     }
-      #   }
+      features = {
+        kubePrism = {
+          enabled = true
+          port    = 7445
+        }
+        hostDNS = {
+          enabled              = true
+          forwardKubeDNSToHost = true
+        }
+      }
     }
-    # cluster = {
-    #   discovery = {
-    #     enabled = true
-    #     registries = {
-    #       kubernetes = {
-    #         disabled = true
-    #       }
-    #       service = {
-    #         disabled = true
-    #       }
-    #     }
-    #   }
-    #   network = {
-    #     cni = {
-    #       name = "none"
-    #     }
-    #   }
-    #   proxy = {
-    #     disabled = true
-    #   }
-    # }
+    cluster = {
+      network = {
+        cni = {
+          name = "none"
+        }
+      }
+      proxy = {
+        disabled = true
+      }
+    }
   }
 }
 

@@ -24,6 +24,29 @@ provider "registry.terraform.io/bpg/proxmox" {
   ]
 }
 
+provider "registry.terraform.io/littlejo/cilium" {
+  version     = "0.2.15-rc1"
+  constraints = "0.2.15-rc1"
+  hashes = [
+    "h1:ECl2rr2SU8KnDjERFx3ZhCcmlQSdbCtZSSvV1diXH2Q=",
+    "zh:0c071da046eb93a9feed8237bc6fa01a30199fc1cd822acc4a6abf6cccfd9c0f",
+    "zh:0d941bb7630f9387649244aac02923dc847bd6d52f9125b23864fd537b535cce",
+    "zh:42a80a6bc85ece1ef93881468ff3a0f21eb0145609dc943140d452e738e9485a",
+    "zh:5899284c4d4135c03c29b587dfe5e506f39d4975fb5b218497724eae7722f09c",
+    "zh:890df766e9b839623b1f0437355032a3c006226a6c200cd911e15ee1a9014e9f",
+    "zh:8c79d0e1bc910e69349bde1ca1bcd92c9559d5bf41449672286010bb51b9cba2",
+    "zh:92b5fe5138b64540e673949d31551bcd0f57440fd7cb313c09b50cf263b8fffe",
+    "zh:9a89c013bd9a335126cc52db5642a0ca1169f004fa0d08689c89e9ea5e7a9f69",
+    "zh:a97e5e4f67b063b8171578123c96a15e87c212472b48f0c26de2643b47d6884c",
+    "zh:b7235e4b4b2dbd54adf5b484fcae96ee5cc87f54bcbdf2c0ddcc6e5044c6ced6",
+    "zh:c9048c6e3e9327f0ddbeab6b677dfde835408e1dc519e15a5800029421fc996f",
+    "zh:ce2c09370b617bce662811aed6b149c11a80032a8336d341f9bb71f02fd15ead",
+    "zh:dc7c348e922106d096a74ddff88aa438a98f74db3558ef678855d668c4231d7d",
+    "zh:e42384f7ad93983cfdad5805b0193abe0d2b5a7f4dc704ab7b7f0d4fa6df14d8",
+    "zh:e8f3d24d9da7cf8067ad98ec642e76cc57c9c7de3c7a18fd0c24f2e9f63c6079",
+  ]
+}
+
 provider "registry.terraform.io/siderolabs/talos" {
   version     = "0.7.0"
   constraints = "0.7.0"
