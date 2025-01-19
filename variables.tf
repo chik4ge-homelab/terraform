@@ -1,3 +1,4 @@
+# Proxmox VE variables
 variable "pve_user" {
   description = "The username for the proxmox user"
   type        = string
@@ -22,6 +23,26 @@ variable "pve_host" {
   default     = "192.168.0.150:8006" # TODO: change to my domain and pass cf access headers
 }
 
+# Talos variables
+variable "talos_version" {
+  description = "The version of Talos to use"
+  type        = string
+  default     = "v1.9.2"
+}
+
+variable "cluster_name" {
+  description = "The name of the k8s cluster"
+  type        = string
+  default     = "talos-k8s"
+}
+
+variable "cluster_vip" {
+  description = "The virtual IP (VIP) address of the Kubernetes API server."
+  type        = string
+  default     = "192.168.1.100"
+}
+
+# network variables
 variable "vm_ip_mask" {
   description = "The IP mask for the VMs"
   type        = string
@@ -32,6 +53,13 @@ variable "network_gateway" {
   description = "The network gateway for the VMs"
   type        = string
   default     = "192.168.0.1"
+}
+
+# Kubernetes variables
+variable "kubernetes_version" {
+  description = "The version of Kubernetes to use"
+  type        = string
+  default     = "1.32.0"
 }
 
 variable "control_planes" {
@@ -49,12 +77,12 @@ variable "control_planes" {
     })
   )
   default = [
-    # {
-    #   name         = "k8s-cp-argon"
-    #   vm_id         = 101
-    #   pve_node_name = "host01"
-    #   ip           = "192.168.1.101"
-    # },
+    {
+      name         = "k8s-cp-argon"
+      vm_id         = 101
+      pve_node_name = "host01"
+      ip           = "192.168.1.101"
+    },
     {
       name          = "k8s-cp-boron"
       vm_id         = 102
@@ -79,26 +107,26 @@ variable "workers" {
     })
   )
   default = [
+    {
+      name         = "k8s-w-anemone"
+      vm_id         = 201
+      pve_node_name = "host01"
+      ip           = "192.168.1.201"
+    },
+    {
+      name         = "k8s-w-blossom"
+      vm_id         = 202
+      pve_node_name = "host01"
+      ip           = "192.168.1.202"
+    },
+    {
+      name         = "k8s-w-clover"
+      vm_id         = 203
+      pve_node_name = "host02"
+      ip           = "192.168.1.203"
+    },
     # {
-    #   name         = "k8s-w-anemone"
-    #   vm_id         = 201
-    #   pve_node_name = "host01"
-    #   ip           = "192.168.1.201"
-    # },
-    # {
-    #   name         = "k8s-c-blossom"
-    #   vm_id         = 202
-    #   pve_node_name = "host01"
-    #   ip           = "192.168.1.202"
-    # },
-    # {
-    #   name         = "k8s-c-clover"
-    #   vm_id         = 203
-    #   pve_node_name = "host02"
-    #   ip           = "192.168.1.203"
-    # },
-    # {
-    #   name         = "k8s-c-daisy"
+    #   name         = "k8s-w-daisy"
     #   vm_id         = 204
     #   pve_node_name = "host02"
     #   ip           = "192.168.1.204"
