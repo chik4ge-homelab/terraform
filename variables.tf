@@ -36,7 +36,7 @@ variable "network_gateway" {
 variable "kubernetes_version" {
   description = "The version of Kubernetes to use"
   type        = string
-  default     = "1.32.0" # renovate: datasource=github-releases packageName=kubernetes/kubernetes
+  default     = "1.32.1" # renovate: datasource=github-releases packageName=kubernetes/kubernetes
 }
 
 # Talos variables
