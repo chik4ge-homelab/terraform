@@ -36,14 +36,14 @@ variable "network_gateway" {
 variable "kubernetes_version" {
   description = "The version of Kubernetes to use"
   type        = string
-  default     = "1.32.0" # renovate: datasource=github-releases depName=kubernetes/kubernetes
+  default     = "1.32.0" # renovate: datasource=github-releases packageName=kubernetes/kubernetes
 }
 
 # Talos variables
 variable "talos_version" {
   description = "The version of Talos to use"
   type        = string
-  default     = "v1.9.2" # renovate: datasource=github-releases depName=siderolabs/talos
+  default     = "v1.9.2" # renovate: datasource=github-releases packageName=siderolabs/talos
 }
 variable "cluster_name" {
   description = "The name of the k8s cluster"
