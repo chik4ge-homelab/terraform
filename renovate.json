@@ -19,16 +19,6 @@
       "matchStrings": [
         "variable\\s+\"(?<depName>[a-z0-9_]+?)_version\"\\s+{[\\s\\S]*?default\\s+=\\s+\"(?<currentValue>[a-z0-9.-]+)\"\\s+# renovate: datasource=(?<datasource>.+?)(?: packageName=(?<packageName>.+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?(?: versioning=(?<versioning>.+?))?\\s"
       ]
-    },
-    {
-      "fileMatch": [
-        "^.*\\.tf$"
-      ],
-      "matchStrings": [
-        "variable\\s+\"(?<depName>[a-z0-9_]+?)_version\"\\s+{[\\s\\S]*?default\\s+=\\s+\"(?<currentValue>[a-z0-9.-]+)\"\\s+# renovate: datasource=helm packageName=(?<packageName>.+?) helmRepository=(?<helmRepository>.+?)\\s"
-      ],
-      "datasourceTemplate": "helm",
-      "registryUrlTemplate": "https://artifacthub.io/packages/helm/${packageName}",
     }
   ]
 }
