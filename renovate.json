@@ -8,5 +8,17 @@
   ],
   "assignees": [
     "chik4ge"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Terraform variables",
+      "fileMatch": [
+        "^variables.tf$"
+      ],
+      "matchStrings": [
+        "variable\\s+\"(?<depName>[a-z0-9_]+?)_version\"\\s+{[\\s\\S]*?default\\s+=\\s+\"(?<currentValue>[a-z0-9.-]+)\"\\s+# renovate: datasource=(?<datasource>.+?)(?: packageName=(?<packageName>.+?))?(?: versioning=(?<versioning>.+?))?\\s"
+      ]
+    }
   ]
 }
