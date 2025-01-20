@@ -17,8 +17,7 @@
       "matchStrings": [
         "variable\\s+\"kubernetes_version\"\\s+{[\\s\\S]*?default\\s+=\\s+\"(?<currentValue>[^\"]+)\""
       ],
-      "datasourceTemplate": "kubernetes-api",
-      "versioning": "kubernetes-api"
+      "datasourceTemplate": "kubernetes-api"
     }
   ]
 }
