@@ -8,16 +8,5 @@
   ],
   "assignees": [
     "chik4ge"
-  ],
-  "customManagers": [
-    {
-      "fileMatch": [
-        "^variables.tf$"
-      ],
-      "matchStrings": [
-        "variable\\s+\"kubernetes_version\"\\s+{[\\s\\S]*?default\\s+=\\s+\"(?<currentValue>[^\"]+)\""
-      ],
-      "datasourceTemplate": "kubernetes-api"
-    }
   ]
 }
