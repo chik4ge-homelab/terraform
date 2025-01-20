@@ -35,16 +35,14 @@ resource "talos_machine_secrets" "this" {
 data "talos_client_configuration" "this" {
   cluster_name         = var.cluster_name
   client_configuration = talos_machine_secrets.this.client_configuration
-  nodes                = [for node in var.control_planes : node.name]
-  endpoints            = [for node in var.control_planes : node.ip]
+  endpoints            = var.control_planes[*].ip
 }
 
 data "talos_machine_configuration" "control_plane" {
   cluster_name     = var.cluster_name
   machine_type     = "controlplane"
-  cluster_endpoint = "https://${var.cluster_vip}:6443"
-  #   cluster_endpoint = "https://${var.control_planes[0].ip}:6443"
-  machine_secrets = talos_machine_secrets.this.machine_secrets
+  cluster_endpoint = "https://${var.control_planes[0].ip}:6443"
+  machine_secrets  = talos_machine_secrets.this.machine_secrets
 
   kubernetes_version = var.kubernetes_version
   talos_version      = var.talos_version
@@ -71,9 +69,8 @@ data "talos_machine_configuration" "control_plane" {
 }
 
 data "talos_machine_configuration" "worker" {
-  cluster_name = var.cluster_name
-  machine_type = "worker"
-  #   cluster_endpoint = "https://${var.cluster_vip}:6443"
+  cluster_name     = var.cluster_name
+  machine_type     = "worker"
   cluster_endpoint = "https://${var.control_planes[0].ip}:6443"
   machine_secrets  = talos_machine_secrets.this.machine_secrets
 
@@ -85,38 +82,76 @@ data "talos_machine_configuration" "worker" {
   ]
 }
 
-resource "talos_cluster_kubeconfig" "this" {
-  client_configuration = data.talos_client_configuration.this.client_configuration
-  node                 = var.control_planes[0].name
-  endpoint             = var.control_planes[0].ip
-  depends_on           = [talos_machine_bootstrap.this]
-}
-
 resource "talos_machine_configuration_apply" "control_plane" {
+  depends_on = [
+    proxmox_virtual_environment_vm.control_planes
+  ]
+
   count = length(var.control_planes)
 
   client_configuration        = data.talos_client_configuration.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.control_plane.machine_configuration
-  node                        = var.control_planes[count.index].name
+  node                        = var.control_planes[count.index].ip
 
-  endpoint   = var.control_planes[count.index].ip
-  depends_on = [proxmox_virtual_environment_vm.control_planes]
+  endpoint = var.control_planes[count.index].ip
 }
 
 resource "talos_machine_configuration_apply" "worker" {
+  depends_on = [
+    proxmox_virtual_environment_vm.workers
+  ]
+
   count = length(var.workers)
 
   client_configuration        = data.talos_client_configuration.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
-  node                        = var.workers[count.index].name
+  node                        = var.workers[count.index].ip
 
-  endpoint   = var.workers[count.index].ip
-  depends_on = [proxmox_virtual_environment_vm.workers]
+  endpoint = var.workers[count.index].ip
 }
 
 resource "talos_machine_bootstrap" "this" {
+  depends_on = [
+    talos_machine_configuration_apply.control_plane,
+    talos_machine_configuration_apply.worker
+  ]
+
   client_configuration = data.talos_client_configuration.this.client_configuration
-  node                 = var.control_planes[0].name
+  node                 = var.control_planes[0].ip
   endpoint             = var.control_planes[0].ip
-  depends_on           = [talos_machine_configuration_apply.control_plane]
+}
+
+resource "talos_cluster_kubeconfig" "this" {
+  depends_on = [
+    talos_machine_bootstrap.this
+  ]
+
+  client_configuration = data.talos_client_configuration.this.client_configuration
+  node                 = var.control_planes[0].ip
+  endpoint             = var.control_planes[0].ip
+}
+
+data "talos_cluster_health" "with_k8s" {
+  depends_on = [
+    talos_machine_bootstrap.this,
+    talos_cluster_kubeconfig.this
+  ]
+
+  client_configuration = data.talos_client_configuration.this.client_configuration
+  control_plane_nodes  = var.control_planes[*].ip
+  worker_nodes         = var.workers[*].ip
+  endpoints            = var.control_planes[*].ip
+}
+
+data "talos_cluster_health" "without_k8s" {
+  depends_on = [
+    talos_machine_bootstrap.this,
+    talos_cluster_kubeconfig.this
+  ]
+
+  skip_kubernetes_checks = true
+  client_configuration   = data.talos_client_configuration.this.client_configuration
+  control_plane_nodes    = var.control_planes[*].ip
+  worker_nodes           = var.workers[*].ip
+  endpoints              = var.control_planes[*].ip
 }

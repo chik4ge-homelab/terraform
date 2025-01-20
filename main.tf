@@ -17,13 +17,13 @@ locals {
 }
 
 resource "proxmox_virtual_environment_download_file" "talos_cloud_images" {
-  count        = length(local.pve_nodes)
+  count = length(local.pve_nodes)
 
-  node_name    = local.pve_nodes[count.index]
-  content_type = "iso"
-  datastore_id = "local"
-  url          = local.talos_iso_url
-  file_name    = local.talos_iso_file_name
+  node_name           = local.pve_nodes[count.index]
+  content_type        = "iso"
+  datastore_id        = "local"
+  url                 = local.talos_iso_url
+  file_name           = local.talos_iso_file_name
   overwrite_unmanaged = true
 }
 
@@ -32,7 +32,7 @@ resource "proxmox_virtual_environment_vm" "control_planes" {
 
   name        = var.control_planes[count.index].name
   description = "Managed by Terraform"
-  tags        = sort(["kubernetes", "talos", "k8s-control", "terraform"])
+  tags        = sort(["kubernetes", "k8s-control"])
 
   bios            = "ovmf"
   machine         = "q35"
@@ -88,7 +88,7 @@ resource "proxmox_virtual_environment_vm" "control_planes" {
   initialization {
     ip_config {
       ipv4 {
-        address = "${var.control_planes[count.index].ip}/${var.vm_ip_mask}"
+        address = "${var.control_planes[count.index].ip}/${var.network_mask}"
         gateway = var.network_gateway
       }
     }
@@ -100,7 +100,7 @@ resource "proxmox_virtual_environment_vm" "workers" {
 
   name        = var.workers[count.index].name
   description = "Managed by Terraform"
-  tags        = sort(["kubernetes", "talos", "k8s-workers", "terraform"])
+  tags        = sort(["kubernetes", "k8s-worker"])
 
   bios            = "ovmf"
   machine         = "q35"
@@ -156,7 +156,7 @@ resource "proxmox_virtual_environment_vm" "workers" {
   initialization {
     ip_config {
       ipv4 {
-        address = "${var.workers[count.index].ip}/${var.vm_ip_mask}"
+        address = "${var.workers[count.index].ip}/${var.network_mask}"
         gateway = var.network_gateway
       }
     }
