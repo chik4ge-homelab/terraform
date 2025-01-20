@@ -43,7 +43,7 @@ variable "kubernetes_version" {
 variable "talos_version" {
   description = "The version of Talos to use"
   type        = string
-  default     = "v1.9.2"
+  default     = "v1.9.2" # renovate: datasource=github-releases depName=siderolabs/talos
 }
 variable "cluster_name" {
   description = "The name of the k8s cluster"
@@ -60,21 +60,21 @@ variable "cluster_vip" {
 variable "cilium_version" {
   description = "The helm chart version of Cilium to use"
   type        = string
-  default     = "1.16.5"
+  default     = "1.16.5" # renovate: datasource=helm depName=cilium/cilium registryUrl=https://helm.cilium.io
 }
 
 # Argo CD variables
 variable "argocd_version" {
   description = "The helm chart version of Argo CD to use"
   type        = string
-  default     = "7.7.16"
+  default     = "7.7.16" # renovate: datasource=github-releases depName=argoproj/argo-helm registryUrl=https://argoproj.github.io/argo-helm
 }
 
 # Bitwarden Secret Operator settings
 variable "bitwarden_secret_operator_version" {
   description = "The helm chart version of the Bitwarden Secret Operator to use"
   type        = string
-  default     = "0.1.0-Beta"
+  default     = "0.1.0-Beta" # renovate: datasource=github-releases depName=bitwarden/sm-operator registryUrl=https://charts.bitwarden.com
 }
 variable "bitwarden_token" {
   description = "The machine account token for the Bitwarden Secret Operator"
