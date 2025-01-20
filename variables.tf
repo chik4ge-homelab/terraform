@@ -56,26 +56,7 @@ variable "cluster_vip" {
   default     = "192.168.1.100"
 }
 
-# Cilium variables
-variable "cilium_version" {
-  description = "The helm chart version of Cilium to use"
-  type        = string
-  default     = "1.16.5" # renovate: datasource=helm depName=cilium/cilium registryUrl=https://helm.cilium.io
-}
-
-# Argo CD variables
-variable "argocd_version" {
-  description = "The helm chart version of Argo CD to use"
-  type        = string
-  default     = "7.7.16" # renovate: datasource=helm depName=argoproj/argo-helm registryUrl=https://argoproj.github.io/argo-helm
-}
-
 # Bitwarden Secret Operator settings
-variable "bitwarden_secret_operator_version" {
-  description = "The helm chart version of the Bitwarden Secret Operator to use"
-  type        = string
-  default     = "0.1.0-Beta" # renovate: datasource=helm depName=bitwarden/sm-operator registryUrl=https://charts.bitwarden.com
-}
 variable "bitwarden_token" {
   description = "The machine account token for the Bitwarden Secret Operator"
   type        = string

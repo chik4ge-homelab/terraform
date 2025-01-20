@@ -8,7 +8,7 @@ resource "helm_release" "cilium" {
   chart      = "cilium"
   namespace  = "kube-system"
 
-  version = var.cilium_version
+  version = "1.16.5"
 
   set = [
     {
@@ -57,7 +57,7 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
 
-  version = var.argocd_version
+  version = "7.7.16"
 }
 
 resource "helm_release" "bitwarden-secret-operator" {
@@ -75,5 +75,5 @@ resource "helm_release" "bitwarden-secret-operator" {
     value = "180"
   }]
 
-  version = var.bitwarden_secret_operator_version
+  version = "0.1.0-Beta"
 }
