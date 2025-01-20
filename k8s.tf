@@ -60,6 +60,23 @@ resource "helm_release" "argocd" {
   version = "7.7.16"
 }
 
+resource "kubernetes_secret" "bw-auth-token" {
+  depends_on = [
+    data.talos_cluster_health.with_k8s
+  ]
+
+  metadata {
+    name = "bw-auth-token"
+  }
+
+  type      = "Opaque"
+  immutable = true
+
+  data = {
+    "token" = var.bitwarden_token
+  }
+}
+
 resource "helm_release" "bitwarden-secret-operator" {
   depends_on = [
     data.talos_cluster_health.with_k8s

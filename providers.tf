@@ -10,6 +10,11 @@ terraform {
       version = "0.7.1"
     }
 
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.35.1"
+    }
+
     helm = {
       source  = "hashicorp/helm"
       version = "3.0.0-pre1"
@@ -22,11 +27,28 @@ terraform {
   }
 }
 
+locals {
+  kubernetes_config = {
+    host                   = talos_cluster_kubeconfig.this.kubernetes_client_configuration.host
+    client_certificate     = base64decode(talos_cluster_kubeconfig.this.kubernetes_client_configuration.client_certificate)
+    client_key             = base64decode(talos_cluster_kubeconfig.this.kubernetes_client_configuration.client_key)
+    cluster_ca_certificate = base64decode(talos_cluster_kubeconfig.this.kubernetes_client_configuration.ca_certificate)
+  }
+}
+
 provider "proxmox" {
   endpoint = "https://${var.pve_host}/"
   username = var.pve_user
   password = var.pve_password
   insecure = var.pve_tls_insecure
+}
+
+provider "kubernetes" {
+  host = talos_cluster_kubeconfig.this.kubernetes_client_configuration.host
+
+  client_certificate     = base64decode(talos_cluster_kubeconfig.this.kubernetes_client_configuration.client_certificate)
+  client_key             = base64decode(talos_cluster_kubeconfig.this.kubernetes_client_configuration.client_key)
+  cluster_ca_certificate = base64decode(talos_cluster_kubeconfig.this.kubernetes_client_configuration.ca_certificate)
 }
 
 provider "helm" {
