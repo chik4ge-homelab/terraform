@@ -3,14 +3,22 @@
   "extends": [
     "config:recommended"
   ],
+  "reviewers": [
+    "chik4ge"
+  ],
+  "assignees": [
+    "chik4ge"
+  ],
   "customManagers": [
     {
-      "fileMatch": ["^main.tf$"],
-      "matchStrings": [
-        "talos_version\\s*=\\s*\"(?<currentValue>.*?)\""
+      "fileMatch": [
+        "^variables.tf$"
       ],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "siderolabs/talos"
+      "matchStrings": [
+        "variable\\s+\"kubernetes_version\"\\s+{[\\s\\S]*?default\\s+=\\s+\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "kubernetes-api",
+      "versioning": "kubernetes-api"
     }
   ]
 }

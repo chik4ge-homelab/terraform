@@ -58,21 +58,21 @@ variable "cluster_vip" {
 
 # Cilium variables
 variable "cilium_version" {
-  description = "The version of Cilium to use"
+  description = "The helm chart version of Cilium to use"
   type        = string
   default     = "1.16.5"
 }
 
 # Argo CD variables
 variable "argocd_version" {
-  description = "The version of Argo CD to use"
+  description = "The helm chart version of Argo CD to use"
   type        = string
   default     = "7.7.16"
 }
 
 # Bitwarden Secret Operator settings
 variable "bitwarden_secret_operator_version" {
-  description = "The version of the Bitwarden Secret Operator to use"
+  description = "The helm chart version of the Bitwarden Secret Operator to use"
   type        = string
   default     = "0.1.0-Beta"
 }
