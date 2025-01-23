@@ -48,7 +48,7 @@ resource "helm_release" "cilium" {
 
 resource "helm_release" "argocd" {
   depends_on = [
-    data.talos_cluster_health.with_k8s
+    data.talos_cluster_health.without_k8s
   ]
 
   name             = "argocd"
@@ -60,9 +60,21 @@ resource "helm_release" "argocd" {
   version = "7.7.16"
 }
 
+# get argocd initial admin password
+data "kubernetes_secret" "argocd-initial-admin-secret" {
+  depends_on = [
+    helm_release.argocd
+  ]
+
+  metadata {
+    name      = "argocd-initial-admin-secret"
+    namespace = "argocd"
+  }
+}
+
 resource "kubernetes_secret" "bw-auth-token" {
   depends_on = [
-    data.talos_cluster_health.with_k8s
+    data.talos_cluster_health.without_k8s
   ]
 
   metadata {
@@ -77,20 +89,63 @@ resource "kubernetes_secret" "bw-auth-token" {
   }
 }
 
-resource "helm_release" "bitwarden-secret-operator" {
+resource "argocd_application" "external-secrets" {
   depends_on = [
-    data.talos_cluster_health.with_k8s
+    helm_release.argocd
   ]
 
-  name         = "bw-sm-operator"
-  repository   = "https://charts.bitwarden.com"
-  chart        = "sm-operator"
-  force_update = true
-  replace      = true
-  set = [{
-    name  = "settings.bwSecretsManagerRefreshInterval"
-    value = "180"
-  }]
+  metadata {
+    name      = "external-secrets-bitwarden"
+    namespace = "argocd"
+  }
 
-  version = "0.1.0-Beta"
+  spec {
+    project = "default"
+    source {
+      repo_url        = "https://github.com/chik4ge-homelab/external-secrets-bitwarden"
+      path            = "."
+      target_revision = "main"
+    }
+    destination {
+      namespace = "default"
+      server    = "https://kubernetes.default.svc"
+    }
+    sync_policy {
+      automated {
+        prune = true
+      }
+      sync_options = [
+        "CreateNamespace=true"
+      ]
+    }
+  }
 }
+
+# resource "argocd_application" "self-managed-argocd" {
+#   depends_on = [
+#     helm_release.argocd
+#   ]
+
+#   metadata {
+#     name      = "argo-cd"
+#     namespace = "argocd"
+#   }
+
+#   spec {
+#     project = "default"
+#     source {
+#       repo_url        = "https://github.com/chik4ge-homelab/self-managed-argocd"
+#       path            = "."
+#       target_revision = "main"
+#     }
+#     destination {
+#       namespace = "argocd"
+#       server    = "https://kubernetes.default.svc"
+#     }
+#     sync_policy {
+#       automated {
+#         prune = true
+#       }
+#     }
+#   }
+# }

@@ -63,6 +63,8 @@ provider "helm" {
 
 provider "argocd" {
   port_forward = true
+  username     = "admin"
+  password     = data.kubernetes_secret.argocd-initial-admin-secret.data["password"]
   kubernetes {
     host = talos_cluster_kubeconfig.this.kubernetes_client_configuration.host
 

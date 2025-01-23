@@ -128,19 +128,7 @@ resource "talos_cluster_kubeconfig" "this" {
 
   client_configuration = data.talos_client_configuration.this.client_configuration
   node                 = var.control_planes[0].ip
-  endpoint             = var.control_planes[0].ip
-}
-
-data "talos_cluster_health" "with_k8s" {
-  depends_on = [
-    talos_machine_bootstrap.this,
-    talos_cluster_kubeconfig.this
-  ]
-
-  client_configuration = data.talos_client_configuration.this.client_configuration
-  control_plane_nodes  = var.control_planes[*].ip
-  worker_nodes         = var.workers[*].ip
-  endpoints            = var.control_planes[*].ip
+  endpoint             = var.cluster_vip
 }
 
 data "talos_cluster_health" "without_k8s" {
