@@ -14,6 +14,27 @@ locals {
           forwardKubeDNSToHost = true
         }
       }
+      # https://www.talos.dev/v1.9/kubernetes-guides/configuration/storage/#prep-nodes
+      sysctls = {
+        "vm.nr_hugepages" = "1024"
+      }
+      nodeLabels = {
+        "openebs.io/engine" = "mayastor"
+      }
+      kubelet = {
+        extraMounts = [
+          {
+            destination = "/var/local"
+            type        = "bind"
+            source      = "/var/local"
+            options = [
+              "bind",
+              "rshared",
+              "rw",
+            ]
+          },
+        ]
+      }
     }
     cluster = {
       network = {
@@ -62,6 +83,21 @@ data "talos_machine_configuration" "control_plane" {
               }
             }
           ]
+        }
+      }
+      # https://www.talos.dev/v1.9/kubernetes-guides/configuration/storage/#prep-nodes
+      cluster = {
+        apiServer = {
+          admissionControl = [{
+            name = "PodSecurity"
+            configuration = {
+              apiVersion = "pod-security.admission.config.k8s.io/v1beta1"
+              kind       = "PodSecurityConfiguration"
+              exemptions = {
+                namespaces = ["openebs"]
+              }
+            }
+          }]
         }
       }
     })
@@ -131,15 +167,15 @@ resource "talos_cluster_kubeconfig" "this" {
   endpoint             = var.cluster_vip
 }
 
-data "talos_cluster_health" "without_k8s" {
-  depends_on = [
-    talos_machine_bootstrap.this,
-    talos_cluster_kubeconfig.this
-  ]
+# data "talos_cluster_health" "without_k8s" {
+#   depends_on = [
+#     talos_machine_bootstrap.this,
+#     talos_cluster_kubeconfig.this
+#   ]
 
-  skip_kubernetes_checks = true
-  client_configuration   = data.talos_client_configuration.this.client_configuration
-  control_plane_nodes    = var.control_planes[*].ip
-  worker_nodes           = var.workers[*].ip
-  endpoints              = var.control_planes[*].ip
-}
+#   skip_kubernetes_checks = true
+#   client_configuration   = data.talos_client_configuration.this.client_configuration
+#   control_plane_nodes    = var.control_planes[*].ip
+#   worker_nodes           = var.workers[*].ip
+#   endpoints              = var.control_planes[*].ip
+# }

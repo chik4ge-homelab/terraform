@@ -1,6 +1,7 @@
 resource "helm_release" "cilium" {
   depends_on = [
-    data.talos_cluster_health.without_k8s
+    # data.talos_cluster_health.without_k8s,
+    talos_cluster_kubeconfig.this
   ]
 
   name       = "cilium"
@@ -48,7 +49,8 @@ resource "helm_release" "cilium" {
 
 resource "helm_release" "argocd" {
   depends_on = [
-    data.talos_cluster_health.without_k8s
+    # data.talos_cluster_health.without_k8s,
+    talos_cluster_kubeconfig.this
   ]
 
   name             = "argocd"
@@ -74,7 +76,8 @@ data "kubernetes_secret" "argocd-initial-admin-secret" {
 
 resource "kubernetes_secret" "bw-auth-token" {
   depends_on = [
-    data.talos_cluster_health.without_k8s
+    # data.talos_cluster_health.without_k8s,
+    talos_cluster_kubeconfig.this
   ]
 
   metadata {
@@ -89,37 +92,37 @@ resource "kubernetes_secret" "bw-auth-token" {
   }
 }
 
-resource "argocd_application" "external-secrets" {
-  depends_on = [
-    helm_release.argocd
-  ]
+# resource "argocd_application" "external-secrets" {
+#   depends_on = [
+#     helm_release.argocd
+#   ]
 
-  metadata {
-    name      = "external-secrets-bitwarden"
-    namespace = "argocd"
-  }
+#   metadata {
+#     name      = "external-secrets-bitwarden"
+#     namespace = "argocd"
+#   }
 
-  spec {
-    project = "default"
-    source {
-      repo_url        = "https://github.com/chik4ge-homelab/external-secrets-bitwarden"
-      path            = "."
-      target_revision = "main"
-    }
-    destination {
-      namespace = "default"
-      server    = "https://kubernetes.default.svc"
-    }
-    sync_policy {
-      automated {
-        prune = true
-      }
-      sync_options = [
-        "CreateNamespace=true"
-      ]
-    }
-  }
-}
+#   spec {
+#     project = "default"
+#     source {
+#       repo_url        = "https://github.com/chik4ge-homelab/external-secrets-bitwarden"
+#       path            = "."
+#       target_revision = "main"
+#     }
+#     destination {
+#       namespace = "default"
+#       server    = "https://kubernetes.default.svc"
+#     }
+#     sync_policy {
+#       automated {
+#         prune = true
+#       }
+#       sync_options = [
+#         "CreateNamespace=true"
+#       ]
+#     }
+#   }
+# }
 
 # resource "argocd_application" "self-managed-argocd" {
 #   depends_on = [
@@ -149,3 +152,24 @@ resource "argocd_application" "external-secrets" {
 #     }
 #   }
 # }
+
+/* apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: https://kubernetes.default.svc
+  source:
+    path: .
+    repoURL: https://github.com/chik4ge-homelab/homelab-applications
+    targetRevision: main
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+ */
