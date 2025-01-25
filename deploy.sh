@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export TF_LOG=ERROR
+
 # Terraform init
 terraform init
 

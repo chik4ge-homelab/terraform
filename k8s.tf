@@ -82,6 +82,7 @@ resource "kubernetes_secret" "bw-auth-token" {
 
   metadata {
     name = "bw-auth-token"
+    namespace = "external-secrets"
   }
 
   type      = "Opaque"
@@ -92,84 +93,32 @@ resource "kubernetes_secret" "bw-auth-token" {
   }
 }
 
-# resource "argocd_application" "external-secrets" {
-#   depends_on = [
-#     helm_release.argocd
-#   ]
+resource "argocd_application" "apps" {
+  depends_on = [
+    helm_release.argocd
+  ]
 
-#   metadata {
-#     name      = "external-secrets-bitwarden"
-#     namespace = "argocd"
-#   }
+  metadata {
+    name      = "apps"
+    namespace = "argocd"
+  }
 
-#   spec {
-#     project = "default"
-#     source {
-#       repo_url        = "https://github.com/chik4ge-homelab/external-secrets-bitwarden"
-#       path            = "."
-#       target_revision = "main"
-#     }
-#     destination {
-#       namespace = "default"
-#       server    = "https://kubernetes.default.svc"
-#     }
-#     sync_policy {
-#       automated {
-#         prune = true
-#       }
-#       sync_options = [
-#         "CreateNamespace=true"
-#       ]
-#     }
-#   }
-# }
-
-# resource "argocd_application" "self-managed-argocd" {
-#   depends_on = [
-#     helm_release.argocd
-#   ]
-
-#   metadata {
-#     name      = "argo-cd"
-#     namespace = "argocd"
-#   }
-
-#   spec {
-#     project = "default"
-#     source {
-#       repo_url        = "https://github.com/chik4ge-homelab/self-managed-argocd"
-#       path            = "."
-#       target_revision = "main"
-#     }
-#     destination {
-#       namespace = "argocd"
-#       server    = "https://kubernetes.default.svc"
-#     }
-#     sync_policy {
-#       automated {
-#         prune = true
-#       }
-#     }
-#   }
-# }
-
-/* apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: apps
-spec:
-  destination:
-    name: ''
-    namespace: default
-    server: https://kubernetes.default.svc
-  source:
-    path: .
-    repoURL: https://github.com/chik4ge-homelab/homelab-applications
-    targetRevision: main
-  sources: []
-  project: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: false
- */
+  spec {
+    project = "default"
+    source {
+      repo_url        = "https://github.com/chik4ge-homelab/homelab-applications"
+      path            = "."
+      target_revision = "main"
+    }
+    destination {
+      namespace = "default"
+      server    = "https://kubernetes.default.svc"
+    }
+    sync_policy {
+      automated {
+        prune     = true
+        self_heal = false
+      }
+    }
+  }
+}
