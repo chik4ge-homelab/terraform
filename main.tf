@@ -11,8 +11,9 @@ locals {
     for idx, node in local.pve_nodes : node => idx
   }
 
-  talos_iso_url       = "https://factory.talos.dev/image/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515/${var.talos_version}/nocloud-amd64.iso"
-  talos_iso_file_name = "talos-${var.talos_version}-nocloud-amd64.iso"
+  talos_version       = "v1.9.2"
+  talos_iso_url       = "https://factory.talos.dev/image/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515/${local.talos_version}/nocloud-amd64.iso"
+  talos_iso_file_name = "talos-${local.talos_version}-nocloud-amd64.iso"
 }
 
 resource "proxmox_virtual_environment_download_file" "talos_cloud_images" {
@@ -139,8 +140,18 @@ resource "proxmox_virtual_environment_vm" "workers" {
     iothread     = true
     ssd          = true
     discard      = "on"
-    size         = var.workers[count.index].disk_size
+    size         = 10 # 10GB
     file_id      = proxmox_virtual_environment_download_file.talos_cloud_images[local.node_to_image_index[var.workers[count.index].pve_node_name]].id
+  }
+
+  disk {
+    datastore_id = "local-lvm"
+    file_format  = "raw"
+    interface    = "scsi1"
+    iothread     = true
+    ssd          = true
+    discard      = "on"
+    size         = var.workers[count.index].disk_size
   }
 
   agent {

@@ -73,7 +73,7 @@ variable "control_planes" {
       ip            = string
       memory        = optional(number, 4 * 1024) # 4GB
       cpu_sockets   = optional(number, 1)
-      cpu_cores     = optional(number, 2)
+      cpu_cores     = optional(number, 4)
       disk_size     = optional(number, 20) # 20GB
     })
   )
@@ -90,12 +90,12 @@ variable "control_planes" {
       pve_node_name = "host02"
       ip            = "192.168.1.102"
     },
-    # {
-    #   name          = "k8s-cp-carbon"
-    #   vm_id         = 103
-    #   pve_node_name = "host02"
-    #   ip            = "192.168.1.103"
-    # },
+    {
+      name          = "k8s-cp-carbon"
+      vm_id         = 104
+      pve_node_name = "host01"
+      ip            = "192.168.1.103"
+    },
   ]
 }
 
@@ -109,7 +109,7 @@ variable "workers" {
       ip            = string
       memory        = optional(number, 10 * 1024) # 10GB
       cpu_sockets   = optional(number, 1)
-      cpu_cores     = optional(number, 2)
+      cpu_cores     = optional(number, 4)
       disk_size     = optional(number, 130) # 130GB
     })
   )
