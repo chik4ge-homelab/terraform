@@ -1,6 +1,6 @@
 resource "helm_release" "cilium" {
   depends_on = [
-    # data.talos_cluster_health.without_k8s,
+    data.talos_cluster_health.without_k8s,
     talos_cluster_kubeconfig.this
   ]
 
@@ -49,7 +49,7 @@ resource "helm_release" "cilium" {
 
 resource "helm_release" "argocd" {
   depends_on = [
-    # data.talos_cluster_health.without_k8s,
+    data.talos_cluster_health.without_k8s,
     talos_cluster_kubeconfig.this
   ]
 
@@ -76,12 +76,12 @@ data "kubernetes_secret" "argocd-initial-admin-secret" {
 
 resource "kubernetes_secret" "bw-auth-token" {
   depends_on = [
-    # data.talos_cluster_health.without_k8s,
+    data.talos_cluster_health.without_k8s,
     talos_cluster_kubeconfig.this
   ]
 
   metadata {
-    name = "bw-auth-token"
+    name      = "bw-auth-token"
     namespace = "external-secrets"
   }
 
