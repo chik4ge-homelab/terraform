@@ -43,7 +43,7 @@ variable "kubernetes_version" {
 variable "talos_version" {
   description = "The version of Talos to use"
   type        = string
-  default     = "v1.9.2" # renovate: datasource=github-releases packageName=siderolabs/talos
+  default     = "v1.9.3" # renovate: datasource=github-releases packageName=siderolabs/talos
 }
 variable "cluster_name" {
   description = "The name of the k8s cluster"
