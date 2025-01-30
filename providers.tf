@@ -22,7 +22,7 @@ terraform {
 
     argocd = {
       source  = "dcoppa/argocd"
-      version = "6.1.0-46"
+      version = "6.1.0-fixes"
     }
   }
 }
