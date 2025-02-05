@@ -9,7 +9,7 @@ resource "helm_release" "cilium" {
   chart      = "cilium"
   namespace  = "kube-system"
 
-  version = "1.16.6"
+  version = "1.17.0"
 
   set = [
     {
