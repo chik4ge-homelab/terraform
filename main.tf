@@ -11,17 +11,15 @@ locals {
     for idx, node in local.pve_nodes : node => idx
   }
 
-  talos_version       = "v1.9.2"
-  talos_iso_url       = "https://factory.talos.dev/image/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515/${local.talos_version}/nocloud-amd64.iso"
-  talos_iso_file_name = "talos-${local.talos_version}-nocloud-amd64.iso"
+  # image with qemu-guest-agent, other extensions are install when machineconfig is applied
+  talos_iso_url       = "https://factory.talos.dev/image/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515/${var.talos_version}/nocloud-amd64.iso"
+  talos_iso_file_name = "talos-${var.talos_version}-nocloud-amd64.iso"
 }
 
-resource "proxmox_virtual_environment_download_file" "talos_cloud_images" {
-  count = length(local.pve_nodes)
-
-  node_name           = local.pve_nodes[count.index]
+resource "proxmox_virtual_environment_download_file" "talos_cloud_image" {
+  node_name           = "host01"
   content_type        = "iso"
-  datastore_id        = "local"
+  datastore_id        = "truenas-nfs"
   url                 = local.talos_iso_url
   file_name           = local.talos_iso_file_name
   overwrite_unmanaged = true
@@ -73,7 +71,7 @@ resource "proxmox_virtual_environment_vm" "control_planes" {
     ssd          = true
     discard      = "on"
     size         = var.control_planes[count.index].disk_size
-    file_id      = proxmox_virtual_environment_download_file.talos_cloud_images[local.node_to_image_index[var.control_planes[count.index].pve_node_name]].id
+    file_id      = proxmox_virtual_environment_download_file.talos_cloud_image.id
   }
 
   agent {
@@ -91,6 +89,13 @@ resource "proxmox_virtual_environment_vm" "control_planes" {
         address = "${var.control_planes[count.index].ip}/${var.network_mask}"
         gateway = var.network_gateway
       }
+    }
+    dns {
+      servers = [
+        "100.100.100.100",
+        "8.8.8.8",
+        "8.8.4.4"
+      ]
     }
   }
 }
@@ -141,7 +146,7 @@ resource "proxmox_virtual_environment_vm" "workers" {
     ssd          = true
     discard      = "on"
     size         = 10 # 10GB
-    file_id      = proxmox_virtual_environment_download_file.talos_cloud_images[local.node_to_image_index[var.workers[count.index].pve_node_name]].id
+    file_id      = proxmox_virtual_environment_download_file.talos_cloud_image.id
   }
 
   disk {
@@ -169,6 +174,13 @@ resource "proxmox_virtual_environment_vm" "workers" {
         address = "${var.workers[count.index].ip}/${var.network_mask}"
         gateway = var.network_gateway
       }
+    }
+    dns {
+      servers = [
+        "100.100.100.100",
+        "8.8.8.8",
+        "8.8.4.4"
+      ]
     }
   }
 }

@@ -32,35 +32,11 @@ variable "network_gateway" {
   default     = "192.168.0.1"
 }
 
-# Kubernetes variables
-variable "kubernetes_version" {
-  description = "The version of Kubernetes to use"
-  type        = string
-  default     = "1.32.1" # renovate: datasource=github-releases packageName=kubernetes/kubernetes
-}
-
 # Talos variables
 variable "talos_version" {
   description = "The version of Talos to use"
   type        = string
-  default     = "v1.9.3" # renovate: datasource=github-releases packageName=siderolabs/talos
-}
-variable "cluster_name" {
-  description = "The name of the k8s cluster"
-  type        = string
-  default     = "talos-k8s"
-}
-variable "cluster_vip" {
-  description = "The virtual IP (VIP) address of the Kubernetes API server."
-  type        = string
-  default     = "192.168.1.100"
-}
-
-# Bitwarden Secret Operator settings
-variable "bitwarden_token" {
-  description = "The machine account token for the Bitwarden Secret Operator"
-  type        = string
-  sensitive   = true
+  default     = "v1.9.4" # renovate: datasource=github-releases packageName=siderolabs/talos
 }
 
 variable "control_planes" {
@@ -119,25 +95,31 @@ variable "workers" {
       vm_id         = 201
       pve_node_name = "host01"
       ip            = "192.168.1.201"
-      memory        = 16 * 1024 # 16GB
+      memory        = 8 * 1024 # 16GB
+      disk_size     = 64       # 64GB
     },
     {
       name          = "k8s-w-blossom"
       vm_id         = 202
       pve_node_name = "host01"
       ip            = "192.168.1.202"
+      memory        = 8 * 1024 # 8GB
+      disk_size     = 64       # 64GB
     },
     {
       name          = "k8s-w-clover"
       vm_id         = 203
       pve_node_name = "host02"
       ip            = "192.168.1.203"
+      disk_size     = 64 # 64GB
     },
-    # {
-    #   name         = "k8s-w-daisy"
-    #   vm_id         = 204
-    #   pve_node_name = "host02"
-    #   ip           = "192.168.1.204"
-    # },
+    {
+      name          = "k8s-w-daisy"
+      vm_id         = 204
+      pve_node_name = "host02"
+      ip            = "192.168.1.204"
+      memory        = 8 * 1024 # 8GB
+      disk_size     = 64       # 64GB
+    },
   ]
 }
