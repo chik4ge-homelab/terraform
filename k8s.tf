@@ -59,7 +59,7 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
 
-  version = "7.8.0"
+  version = "7.8.9"
 }
 
 # get argocd initial admin password
